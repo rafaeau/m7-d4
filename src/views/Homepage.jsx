@@ -43,13 +43,12 @@ function Homepage({jobs, getJobs, addToFavorites}) {
     const [categoriesNames, setCategoriesNames] = useState([]);
 
     useEffect(() => {
+        getJobs();
         fetchCategory().then((res) => setCategory(res));
         fetchCategoriesNames().then((res) => setCategoriesNames(res));
     }, []);
 
-    useEffect(() => {
-        getJobs()
-    })
+    console.log(jobs.jobs?.data)
 
     return (
         <>
@@ -76,7 +75,7 @@ function Homepage({jobs, getJobs, addToFavorites}) {
                 <AiFillStar className='mt-n1' /> Favorites
             </Button>
 
-            {jobs.data && jobs.data.filter(job => job.title.toLowerCase().indexOf(search) !== -1).map(job =>
+            {jobs.jobs?.data && jobs.jobs?.data.map(job =>
                 <div key={job._id} className='d-flex'>
                     <h5>{job.title}</h5>
                     <h6 className="mb-2 mt-1 ml-1">at <Link to={'/' + job.company_name}>{job.company_name}</Link></h6>
