@@ -5,25 +5,18 @@ import { useEffect, useState } from "react";
 import { connect } from 'react-redux';
 import { AiFillStar } from "react-icons/ai";
 import { useNavigate } from 'react-router-dom';
+import { getJobsAction } from "../redux/actions";
 
-const mapStateToProps = state => state
-
-const mapDispatchToProps = (dispatch) => ({
-    addToFavorites: (job) => {
-        dispatch({
-            type: 'ADD_TO_FAVORITES',
-            payload: job
-        })
-    },
+const mapStateToProps = state => ({
+    jobs: state.jobs,
+    errorCode: state.jobs.errorCode
 })
 
-const fetchJobs = async () => {
-    const resp = await fetch('https://strive-jobs-api.herokuapp.com/jobs?limit=30')
-    if (resp.ok) {
-        let jobs = await resp.json();
-        return jobs;
+const mapDispatchToProps = dispatch => ({
+    getJobs: () => {
+        dispatch(getJobsAction())
     }
-}
+})
 
 const fetchCategoriesNames = async () => {
     let resp = await fetch('https://strive-jobs-api.herokuapp.com/jobs/categories');
@@ -41,20 +34,22 @@ const fetchCategory = async (category) => {
     }
 }
 
-function Homepage (props) {
+function Homepage({jobs, getJobs, addToFavorites}) {
 
     const navigate = useNavigate()
 
-    const [jobs, setJobs] = useState([]);
     const [search, setSearch] = useState([]);
     const [category, setCategory] = useState([]);
     const [categoriesNames, setCategoriesNames] = useState([]);
 
     useEffect(() => {
-        fetchJobs().then((res) => setJobs(res));
         fetchCategory().then((res) => setCategory(res));
         fetchCategoriesNames().then((res) => setCategoriesNames(res));
     }, []);
+
+    useEffect(() => {
+        getJobs()
+    })
 
     return (
         <>
@@ -87,7 +82,7 @@ function Homepage (props) {
                     <h6 className="mb-2 mt-1 ml-1">at <Link to={'/' + job.company_name}>{job.company_name}</Link></h6>
                     <span>
                         <Button className='fav-btn btn-sm ml-2' onClick={() => {
-                            props.addToFavorites(job)
+                            addToFavorites(job)
                         }}>
                             +
                         </Button>

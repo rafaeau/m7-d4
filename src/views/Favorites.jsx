@@ -3,18 +3,16 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom';
 import { BsFillTrashFill } from "react-icons/bs";
 import { Button } from 'react-bootstrap';
+import { delFromFavoritesAction } from "../redux/actions";
 
 const mapStateToProps = (state) => ({
-    favorites: state.favorites
-})
+    favorites: state.favorites,
+  })
 
 const mapDispatchToProps = (dispatch) => ({
     delFromFavorites: (i) => {
-        dispatch({
-            type: 'DEL_FROM_FAVORITES',
-            payload: i
-        })
-    },
+      dispatch(delFromFavoritesAction(i))
+    }
 })
 
 const Favorites = ({ favorites, delFromFavorites }) => (
